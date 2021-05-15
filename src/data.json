@@ -1,0 +1,49 @@
+{
+  "games": [
+    {
+      "title": "Monday Game",
+      "description": "Friendly Monday lunchtime soccer game.",
+      "location": {
+        "lat": 42.0248551,
+        "lon": -87.709904
+      },
+      "spots": 18,
+      "startTime": "12:00",
+      "endTime": "13:30",
+      "date": "2021-05-17T00:00:00.000Z",
+      "imgUrl": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.vAHCyUk0eneFr35VR9U96AHaE8%26pid%3DApi&f=1",
+      "creator": "23232323",
+      "roaster": []
+    },
+    {
+      "title": "Wednesday Game",
+      "description": "Friendly Wednesday lunchtime soccer game.",
+      "location": {
+        "lat": 42.0248551,
+        "lon": -87.709904
+      },
+      "spots": 18,
+      "startTime": "12:00",
+      "endTime": "13:30",
+      "date": "2021-05-19T00:00:00.000Z",
+      "imgUrl": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.vAHCyUk0eneFr35VR9U96AHaE8%26pid%3DApi&f=1",
+      "creator": "23232323",
+      "roaster": []
+    },
+    {
+      "title": "Friday Game",
+      "description": "Friendly Friday lunchtime soccer game.",
+      "location": {
+        "lat": 42.0248551,
+        "lon": -87.709904
+      },
+      "spots": 18,
+      "startTime": "12:00",
+      "endTime": "13:30",
+      "date": "2021-05-21T00:00:00.000Z",
+      "imgUrl": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%3Fid%3DOIP.vAHCyUk0eneFr35VR9U96AHaE8%26pid%3DApi&f=1",
+      "creator": "23232323",
+      "roaster": []
+    }
+  ]
+}

@@ -33,8 +33,7 @@ const schema = new Schema({
       required: true,
     },
     creator: {
-      type: Types.ObjectId,
-      ref: 'User'
+      type: String,
     },
     roaster: [
       {
@@ -50,4 +49,4 @@ const schema = new Schema({
 
 
 
-export default model('Game', schema)
+module.exports =  model('Game', schema)
