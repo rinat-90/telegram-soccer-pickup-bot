@@ -2,7 +2,9 @@
 const { Schema, model, Types } = require('mongoose');
 
 const schema = new Schema({
-  telegramId: { type: Number, required: true },
+  telegramId: { type: Number, },
+  name: { type: String },
+  email: { type: String,  required: true },
   games: [{
     type: Types.ObjectId,
     required: true,
@@ -11,4 +13,4 @@ const schema = new Schema({
 });
 
 
-module.exports = model('Bookmark', schema)
+module.exports = model('User', schema)

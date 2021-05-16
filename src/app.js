@@ -3,13 +3,18 @@ const _ = require('lodash')
 const dotenv = require('dotenv')
 const connectDB = require('./utils/db')
 const { getChatId, serializedId, debug } = require('./utils/helper')
-const { gameService } = require('./api')
+const { gameService, userService } = require('./api')
 const kb = require('./keyboards/keyboard-buttons')
 const keyboard = require('./keyboards/keyboard')
 const { ACTIONS_TYPE } = require('./consts')
 
 dotenv.config()
 connectDB()
+
+// userService.createOne({ email: 'ribroff@gmail.com' })
+
+let currentUser
+let isLoggedIn = false
 
 const bot = new TelegramBot(process.env.TOKEN, {
   polling: {
@@ -27,6 +32,10 @@ bot.on('message', async msg => {
   switch (msg.text) {
     case kb.home.games:
       await sendGames(chatId, {})
+      break
+    case kb.auth.login:
+      await bot.sendMessage(chatId, 'Please Enter your email')
+      // await sendGames(chatId, {})
       break
     case kb.home.myGames:
 
@@ -59,7 +68,7 @@ bot.on('callback_query',async query => {
 
   if (data.type === ACTIONS_TYPE.SEND_GAME_LOCATION) {
     const { lat, lon } = data.loc
-    await bot.sendLocation(chatId, lat, lon)
+    await bot.sendLocation(chatId, lat, lon, )
   } else if (data.type === ACTIONS_TYPE.TOGGLE_JOIN_GAME) {
 
   }
@@ -70,9 +79,13 @@ bot.onText(/\/start/, async msg => {
     const text = `Hi, ${msg.from.first_name} \nChoose command to start!`
     const chatId = getChatId(msg)
 
+    currentUser = await userService.findOne({ telegramId: msg.from.id })
+
+    const startKeyboard = currentUser ? keyboard.home : keyboard.auth
+
     await bot.sendMessage(chatId, text, {
       reply_markup: {
-        keyboard: keyboard.home
+        keyboard: startKeyboard
       }
     })
   } catch (e) {
@@ -105,6 +118,27 @@ bot.onText(/\/g(.+)/, async (msg, [source, match]) => {
 
   } catch (e) {
     throw e
+  }
+
+})
+bot.onText(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  async (msg, [source, match]) => {
+    const chatId = getChatId(msg)
+    const telegramId = msg.from.id
+    const name = `${msg.from.first_name} ${msg.from.last_name}`
+
+  if (!isLoggedIn){
+    const user = await userService.findOne({ email: source})
+    if (user) {
+      currentUser = await userService.updateOne({ _id: user._id }, { telegramId, name })
+      await bot.sendMessage(chatId, 'Successfully Logged In!', {
+        reply_markup: { keyboard: keyboard.home }
+      })
+      isLoggedIn = true
+    } else {
+      await bot.sendMessage(chatId, 'No user found with given email!')
+    }
+
   }
 
 })

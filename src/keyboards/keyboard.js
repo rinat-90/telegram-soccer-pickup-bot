@@ -7,4 +7,7 @@ module.exports = {
     [kb.games.mon, kb.games.wen, kb.games.fri],
     [kb.back]
   ],
+  auth: [
+    [kb.auth.login, kb.auth.requestAccess]
+  ]
 }

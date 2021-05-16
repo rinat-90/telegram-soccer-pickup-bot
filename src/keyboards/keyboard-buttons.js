@@ -8,5 +8,9 @@ module.exports = {
     wen: 'Wen',
     fri: 'Fri'
   },
+  auth: {
+    login: 'Login',
+    requestAccess: 'Request membership',
+  },
   back: 'Back'
 }
