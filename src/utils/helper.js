@@ -7,7 +7,7 @@ module.exports = {
   getChatId(msg) {
     return msg.chat.id
   },
-  getItemByUuid(source){
+  serializedId(source){
     return source.substr(2, source.length)
   }
 }

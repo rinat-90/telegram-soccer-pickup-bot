@@ -2,7 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const _ = require('lodash')
 const dotenv = require('dotenv')
 const connectDB = require('./utils/db')
-const { getChatId, getItemByUuid, debug } = require('./utils/helper')
+const { getChatId, serializedId, debug } = require('./utils/helper')
 const { gameService } = require('./api')
 const kb = require('./keyboards/keyboard-buttons')
 const keyboard = require('./keyboards/keyboard')
@@ -83,7 +83,7 @@ bot.onText(/\/g(.+)/, async (msg, [source, match]) => {
 
   try {
     const chatId = getChatId(msg)
-    const gameId = getItemByUuid(source)
+    const gameId = serializedId(source)
     let isGoing = false
 
     const [game] = await Promise.all([gameService.findOneGame(gameId),])
