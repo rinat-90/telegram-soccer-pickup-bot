@@ -6,8 +6,7 @@ const { getChatId, getItemByUuid, debug } = require('./utils/helper')
 const { gameService } = require('./api')
 const kb = require('./keyboards/keyboard-buttons')
 const keyboard = require('./keyboards/keyboard')
-
-
+const { ACTIONS_TYPE } = require('./consts')
 
 dotenv.config()
 connectDB()
@@ -47,47 +46,74 @@ bot.on('message', async msg => {
       break
   }
 })
-bot.onText(/\/start/, async msg => {
-  const text = `Hi, ${msg.from.first_name} \nChoose command to start!`
-  const chatId = getChatId(msg)
+bot.on('callback_query',async query => {
+  const userId = query.from.id
+  const chatId = query.message.chat.id
+  let data
 
-  await bot.sendMessage(chatId, text, {
-    reply_markup: {
-      keyboard: keyboard.home
-    }
-  })
+  try {
+    data = JSON.parse(query.data)
+  } catch (e){
+    throw new Error('Data is not an object')
+  }
+
+  if (data.type === ACTIONS_TYPE.SEND_GAME_LOCATION) {
+    const { lat, lon } = data.loc
+    await bot.sendLocation(chatId, lat, lon)
+  } else if (data.type === ACTIONS_TYPE.TOGGLE_JOIN_GAME) {
+
+  }
 
 })
-bot.onText(/\/g(.+)/, (msg, [source, match]) => {
-  const chatId = getChatId(msg)
-  const gameId = getItemByUuid(source)
+bot.onText(/\/start/, async msg => {
+  try {
+    const text = `Hi, ${msg.from.first_name} \nChoose command to start!`
+    const chatId = getChatId(msg)
 
-  Promise.all([
-    gameService.findOneGame(gameId),
-  ]).then(([game]) => {
+    await bot.sendMessage(chatId, text, {
+      reply_markup: {
+        keyboard: keyboard.home
+      }
+    })
+  } catch (e) {
+    throw e
+  }
+})
+bot.onText(/\/g(.+)/, async (msg, [source, match]) => {
+
+  try {
+    const chatId = getChatId(msg)
+    const gameId = getItemByUuid(source)
+    let isGoing = false
+
+    const [game] = await Promise.all([gameService.findOneGame(gameId),])
     const date = new Date(game.date).toLocaleDateString()
     const spots = getAvailableSpots(game.spots, game.roaster)
     const caption = `Title: ${game.title} \nDate: ${date}\nStart time: ${game.startTime} - Emd Time: ${game.endTime} \n${spots}`
-    bot.sendPhoto(chatId, game.imgUrl, {
+
+    await bot.sendPhoto(chatId, game.imgUrl, {
       caption,
       reply_markup: {
         inline_keyboard: [
           [
-            { text: 'Join', callback_data: 'join'},
-            { text: 'Location', callback_data: 'location' },
+            { text: 'Join', callback_data: JSON.stringify({ type: ACTIONS_TYPE.TOGGLE_JOIN_GAME, gameId: game._id }) },
+            { text: 'Location', callback_data: JSON.stringify({ type: ACTIONS_TYPE.SEND_GAME_LOCATION, loc: game.location }) },
           ],
         ]
       }
     })
-  })
+
+  } catch (e) {
+    throw e
+  }
 
 })
 
 async function sendGames(userId, query) {
   try {
     const games = await gameService.findGames(query)
-    const html  = games.map((g, i) => `<b>${i +1}</b> - ${g.title} - /g${g._id}`).join('\n')
-    sendHtml(userId, html, 'home')
+    const html  = games.map((g, i) => (`<b>${i +1}</b> - ${g.title} - /g${g._id}`)).join('\n')
+    await sendHtml(userId, html, 'home')
   } catch (e) {
     throw e
   }

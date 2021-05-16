@@ -2,9 +2,9 @@ const Game = require('../../models/game.model')
 
 module.exports = {
   async findGames(query){
-    return await Game.find(query)
+    return Game.find(query);
   },
   async findOneGame(id){
-    return await Game.findById({ _id: id })
+    return Game.findById({_id: id});
   },
 }
