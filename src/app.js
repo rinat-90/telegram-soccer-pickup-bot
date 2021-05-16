@@ -22,12 +22,12 @@ const bot = new TelegramBot(process.env.TOKEN, {
   }
 });
 
-bot.on('message', msg => {
+bot.on('message', async msg => {
   const chatId = getChatId(msg)
 
   switch (msg.text) {
     case kb.home.games:
-      sendGames(chatId, {})
+      await sendGames(chatId, {})
       break
     case kb.home.myGames:
 
@@ -41,17 +41,17 @@ bot.on('message', msg => {
     case kb.games.fri:
       break
     case kb.back:
-      bot.sendMessage(chatId, 'Browse games', {
+      await bot.sendMessage(chatId, 'Browse games', {
         reply_markup: { keyboard: keyboard.home }
       })
       break
   }
 })
-bot.onText(/\/start/, msg => {
+bot.onText(/\/start/, async msg => {
   const text = `Hi, ${msg.from.first_name} \nChoose command to start!`
   const chatId = getChatId(msg)
 
-  bot.sendMessage(chatId, text, {
+  await bot.sendMessage(chatId, text, {
     reply_markup: {
       keyboard: keyboard.home
     }
@@ -92,7 +92,7 @@ async function sendGames(userId, query) {
     throw e
   }
 }
-function sendHtml(chatId, html, kbName = null) {
+async function sendHtml(chatId, html, kbName = null) {
   const options = {
     parse_mode: 'HTML'
   }
@@ -101,7 +101,7 @@ function sendHtml(chatId, html, kbName = null) {
       keyboard: keyboard[kbName]
     }
   }
-  bot.sendMessage(chatId, html, options)
+  await bot.sendMessage(chatId, html, options)
 }
 function getAvailableSpots(limit, roaster){
   return !roaster.length
