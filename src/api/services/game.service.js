@@ -14,6 +14,6 @@ module.exports = {
       ? { $pull: { roaster: userId } }
       : { $addToSet: { roaster: userId } }
 
-    return await Game.findOneAndUpdate({ _id: gameId }, updateOptions, { new: true })
+    return Game.findOneAndUpdate({ _id: gameId }, updateOptions, { new: true })
   }
 }

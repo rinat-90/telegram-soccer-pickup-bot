@@ -8,8 +8,7 @@ module.exports = {
     return new User(user).save()
   },
   async updateOne(options, data) {
-    const user = await User.findOneAndUpdate(options, { $set: { ...data } }, { new: true })
-    return user;
+    return User.findOneAndUpdate(options, { $set: { ...data } }, { new: true })
   },
 
 }
