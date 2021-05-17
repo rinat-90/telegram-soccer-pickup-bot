@@ -1,4 +1,4 @@
-const { Schema, model, Types } = require('mongoose');
+const { Schema, model } = require('mongoose');
 const schema = new Schema({
     title: {
       type: String,
@@ -35,13 +35,7 @@ const schema = new Schema({
     creator: {
       type: String,
     },
-    roaster: [
-      {
-        type: Types.ObjectId,
-        required: true,
-        ref: 'User'
-      }
-    ]
+    roaster: [String]
   },
   {
     timestamps: true

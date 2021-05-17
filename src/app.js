@@ -70,7 +70,11 @@ bot.on('callback_query',async query => {
     const { lat, lon } = data.loc
     await bot.sendLocation(chatId, lat, lon, )
   } else if (data.type === ACTIONS_TYPE.TOGGLE_JOIN_GAME) {
-
+    await toggleJoinGame(data.gameId, userId)
+    await bot.answerCallbackQuery({
+      callback_query_id: query.id,
+      text: 'All done!'
+    })
   }
 
 })
@@ -80,7 +84,7 @@ bot.onText(/\/start/, async msg => {
     const chatId = getChatId(msg)
 
     currentUser = await userService.findOne({ telegramId: msg.from.id })
-
+    console.log(currentUser);
     const startKeyboard = currentUser ? keyboard.home : keyboard.auth
 
     await bot.sendMessage(chatId, text, {
@@ -103,13 +107,14 @@ bot.onText(/\/g(.+)/, async (msg, [source, match]) => {
     const date = new Date(game.date).toLocaleDateString()
     const spots = getAvailableSpots(game.spots, game.roaster)
     const caption = `Title: ${game.title} \nDate: ${date}\nStart time: ${game.startTime} - Emd Time: ${game.endTime} \n${spots}`
+    const btnText = game.roaster.includes(msg.from.id) ? 'Cancel' : 'Join'
 
     await bot.sendPhoto(chatId, game.imgUrl, {
       caption,
       reply_markup: {
         inline_keyboard: [
           [
-            { text: 'Join', callback_data: JSON.stringify({ type: ACTIONS_TYPE.TOGGLE_JOIN_GAME, gameId: game._id }) },
+            { text: btnText, callback_data: JSON.stringify({ type: ACTIONS_TYPE.TOGGLE_JOIN_GAME, gameId: game._id }) },
             { text: 'Location', callback_data: JSON.stringify({ type: ACTIONS_TYPE.SEND_GAME_LOCATION, loc: game.location }) },
           ],
         ]
@@ -143,6 +148,10 @@ bot.onText(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9
 
 })
 
+async function toggleJoinGame(gameId, userId) {
+  return await gameService.toggleJoiningGame(gameId, userId)
+
+}
 async function sendGames(userId, query) {
   try {
     const games = await gameService.findGames(query)
