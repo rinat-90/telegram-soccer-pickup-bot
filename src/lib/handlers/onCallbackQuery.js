@@ -1,10 +1,34 @@
 const bot = require('../../bot')
+const keyboard = require('../keyboards/keyboard')
 const { gameService } = require('../../api')
 const { ACTIONS_TYPE } = require('../../consts')
 
 async function toggleJoinGame(gameId, userId) {
   return await gameService.toggleJoiningGame(gameId, userId)
+}
 
+async function sendRoaster(chatId, gameId ) {
+  const users = await gameService.getGameRoaster(gameId)
+  if (!users.length) {
+    await bot.sendMessage(chatId, 'Roaster is empty.')
+  } else {
+    const html  = users.map((u, i) => (`<b>${i +1}</b>. ${u.name} - /u${u.telegramId}`)).join('\n')
+    await sendHtml(chatId, html, 'home')
+  }
+
+}
+
+// TODO repeated function
+async function sendHtml(chatId, html, kbName = null) {
+  const options = {
+    parse_mode: 'HTML'
+  }
+  if (kbName) {
+    options['reply_markup'] = {
+      keyboard: keyboard[kbName]
+    }
+  }
+  await bot.sendMessage(chatId, html, options)
 }
 
 module.exports = async function (query) {
@@ -27,6 +51,8 @@ module.exports = async function (query) {
       callback_query_id: query.id,
       text: 'All done!'
     })
+  } else if (data.type === ACTIONS_TYPE.GAME_ROASTER) {
+   await sendRoaster(chatId, data.gameId)
   }
 
 }

@@ -28,9 +28,12 @@ module.exports = async function (msg, [source, match]) {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: btnText, callback_data: JSON.stringify({ type: ACTIONS_TYPE.TOGGLE_JOIN_GAME, gameId: game._id }) },
+            { text: 'Roaster', callback_data: JSON.stringify({ type: ACTIONS_TYPE.GAME_ROASTER, gameId: game._id }) },
             { text: 'Location', callback_data: JSON.stringify({ type: ACTIONS_TYPE.SEND_GAME_LOCATION, loc: game.location }) },
           ],
+          [
+            { text: btnText, callback_data: JSON.stringify({ type: ACTIONS_TYPE.TOGGLE_JOIN_GAME, gameId: game._id }) },
+          ]
         ]
       }
     })

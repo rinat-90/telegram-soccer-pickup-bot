@@ -1,5 +1,5 @@
 const bot = require('../../bot')
-const keyboard = require('../../keyboards/keyboard')
+const keyboard = require('../keyboards/keyboard')
 const { userService } = require('../../api')
 const { getChatId } = require('../../utils/helper')
 

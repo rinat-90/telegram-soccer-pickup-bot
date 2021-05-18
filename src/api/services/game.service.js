@@ -1,7 +1,8 @@
 const Game = require('../../models/game.model')
+const userService = require('./user.service')
 
 module.exports = {
-  async findGames(query){
+  async findGames(query = {}){
     return Game.find(query);
   },
   async findOneGame(id){
@@ -15,5 +16,15 @@ module.exports = {
       : { $addToSet: { roaster: userId } }
 
     return Game.findOneAndUpdate({ _id: gameId }, updateOptions, { new: true })
+  },
+  async getGameRoaster(gameId) {
+    const game = await this.findOneGame(gameId)
+    if (!game.roaster.length) {
+      return []
+    } else {
+      const roaster = game.roaster.length ? game.roaster.map(x => Number(x)) : []
+      return  await userService.find({ telegramId: { '$in': roaster } })
+    }
+
   }
 }

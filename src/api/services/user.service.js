@@ -1,6 +1,9 @@
 const User = require('../../models/user.model')
 
 module.exports = {
+  async find(options){
+    return User.find(options)
+  },
   async findOne(options){
     return User.findOne(options)
   },

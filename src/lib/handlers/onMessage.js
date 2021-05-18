@@ -1,6 +1,6 @@
 const bot = require('../../bot')
-const kb = require('../../keyboards/keyboard-buttons')
-const keyboard = require('../../keyboards/keyboard')
+const kb = require('../keyboards/keyboard-buttons')
+const keyboard = require('../keyboards/keyboard')
 const { gameService } = require('../../api')
 const { getChatId } = require('../../utils/helper')
 
@@ -8,7 +8,7 @@ async function sendGames(userId, query) {
   try {
     const games = await gameService.findGames(query)
     const html  = games.map((g, i) => (`<b>${i +1}</b> - ${g.title} - /g${g._id}`)).join('\n')
-    await sendHtml(userId, html, 'home')
+    await sendHtml(userId,  html, 'home')
   } catch (e) {
     throw e
   }
@@ -27,6 +27,7 @@ async function sendHtml(chatId, html, kbName = null) {
 
 module.exports = async function (msg) {
   const chatId = getChatId(msg)
+  const userId = msg.from.id.toString()
 
   switch (msg.text) {
     case kb.home.games:
@@ -34,10 +35,9 @@ module.exports = async function (msg) {
       break
     case kb.auth.login:
       await bot.sendMessage(chatId, 'Please Enter your email')
-      // await sendGames(chatId, {})
       break
     case kb.home.myGames:
-
+      await sendGames(chatId, { roaster: userId } )
       break
     case kb.games.mon:
 

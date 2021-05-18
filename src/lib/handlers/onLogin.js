@@ -1,7 +1,7 @@
 const bot = require('../../bot')
 const { userService } = require('../../api')
 const { getChatId } = require('../../utils/helper')
-const keyboard = require('../../keyboards/keyboard')
+const keyboard = require('../keyboards/keyboard')
 
 module.exports = async function (msg, [source, match]) {
   const chatId = getChatId(msg)
