@@ -11,6 +11,9 @@ module.exports = async function (msg) {
     const user = await userService.findOne({ telegramId: msg.from.id })
     const startKeyboard = user ? keyboard.home : keyboard.auth
 
+    // await bot.sendPoll(chatId, 'Choose event location', JSON.stringify(['Quad', 'Lane Tech', 'James Park']))
+
+
     await bot.sendMessage(chatId, text, {
       reply_markup: {
         keyboard: startKeyboard

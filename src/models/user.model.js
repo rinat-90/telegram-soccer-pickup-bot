@@ -2,10 +2,10 @@
 const { Schema, model } = require('mongoose');
 
 const schema = new Schema({
-  telegramId: { type: Number, },
+  telegramId: { type: Number, required: true  },
+  approved: { type: Boolean, default: false },
+  isAdmin: { type: Boolean, default: false },
   name: { type: String },
-  email: { type: String,  required: true },
-  games: [String]
 });
 
 

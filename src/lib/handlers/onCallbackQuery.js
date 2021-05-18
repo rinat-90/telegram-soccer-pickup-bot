@@ -6,14 +6,25 @@ const { ACTIONS_TYPE } = require('../../consts')
 async function toggleJoinGame(gameId, userId) {
   return await gameService.toggleJoiningGame(gameId, userId)
 }
+async function getName(chatId){
+  return await bot.getChat(chatId)
+}
 
 async function sendRoaster(chatId, gameId ) {
   const users = await gameService.getGameRoaster(gameId)
   if (!users.length) {
     await bot.sendMessage(chatId, 'Roaster is empty.')
   } else {
-    const html  = users.map((u, i) => (`<b>${i +1}</b>. ${u.name} - /u${u.telegramId}`)).join('\n')
-    await sendHtml(chatId, html, 'home')
+
+
+
+    const htmlPromises  =  users.map( async (u, i) => {
+      let { first_name, last_name } = await getName(u.telegramId)
+      return `<b>${i +1}</b>. ${first_name} ${last_name} - /u${u.telegramId}`
+    })
+
+    const html = await Promise.all(htmlPromises)
+    await sendHtml(chatId, html.join(''), 'home')
   }
 
 }

@@ -33,9 +33,9 @@ const schema = new Schema({
       required: true,
     },
     creator: {
-      type: String,
+      type: Number,
     },
-    roaster: [String]
+    roaster: [Number]
   },
   {
     timestamps: true

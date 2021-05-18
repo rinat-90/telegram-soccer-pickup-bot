@@ -2,6 +2,9 @@ const Game = require('../../models/game.model')
 const userService = require('./user.service')
 
 module.exports = {
+  async createOne(game){
+    return new Game(game).save();
+  },
   async findGames(query = {}){
     return Game.find(query);
   },
