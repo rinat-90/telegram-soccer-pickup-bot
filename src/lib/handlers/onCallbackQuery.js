@@ -16,15 +16,12 @@ async function sendRoaster(chatId, gameId ) {
     await bot.sendMessage(chatId, 'Roaster is empty.')
   } else {
 
-
-
     const htmlPromises  =  users.map( async (u, i) => {
       let { first_name, last_name } = await getName(u.telegramId)
       return `<b>${i +1}</b>. ${first_name} ${last_name} - /u${u.telegramId}`
     })
-
     const html = await Promise.all(htmlPromises)
-    await sendHtml(chatId, html.join(''), 'home')
+    await sendHtml(chatId, html.join('\n'), 'home')
   }
 
 }
